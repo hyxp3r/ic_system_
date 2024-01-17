@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "ic-system"
+version = "0.1.0"
+description = ""
+authors = ["Evgeniy <erma2001@mail.ru>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+django = "^5.0.1"
+psycopg2 = {version = "^2.9.9", platform = "linux"}
+psycopg2-binary = {version = "^2.9.9", platform = "win32"}
+pyodbc = "^5.0.1"
+python-dotenv = "^1.0.0"
+djangorestframework = "^3.14.0"
+django-filter = "^23.5"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
