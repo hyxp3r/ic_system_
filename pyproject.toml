@@ -17,6 +17,8 @@ redis = "^5.0.1"
 celery = "^5.3.6"
 django = "4.1.4"
 django-celery-beat = "^2.5.0"
+pandas = "^2.1.4"
+openpyxl = "^3.1.2"
 
 
 [build-system]
