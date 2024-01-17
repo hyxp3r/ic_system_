@@ -7,13 +7,16 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.11"
-django = "^5.0.1"
 psycopg2 = {version = "^2.9.9", platform = "linux"}
 psycopg2-binary = {version = "^2.9.9", platform = "win32"}
 pyodbc = "^5.0.1"
 python-dotenv = "^1.0.0"
 djangorestframework = "^3.14.0"
 django-filter = "^23.5"
+redis = "^5.0.1"
+celery = "^5.3.6"
+django = "4.1.4"
+django-celery-beat = "^2.5.0"
 
 
 [build-system]
