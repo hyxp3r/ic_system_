@@ -1,28 +1,20 @@
 import os
 from pathlib import Path
-
 from dotenv import load_dotenv
 
 load_dotenv()
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get("SECRET_KEY")
 
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = []
 
 
-# Application definition
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -32,7 +24,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'src.api'
+    'django_celery_beat',
+
+
 ]
 
 MIDDLEWARE = [
@@ -66,19 +60,25 @@ TEMPLATES = [
 WSGI_APPLICATION = 'src.config.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        "ENGINE": os.environ.get("ENGINE", "django.db.backends.sqlite3"),
+        "NAME": os.environ.get("DB", BASE_DIR / "db.sqlite3"),
+        'USER': os.environ.get("USER_DB"),
+        'PASSWORD':  os.environ.get("PASSWORD"),
+        'HOST':  os.environ.get("HOST"),
+        'ATOMIC_REQUESTS': True,
     }
 }
 
+TANDEM_HOST = os.environ.get("TANDEM_HOST")
+TANDEM_DB = os.environ.get("TANDEM_DB")
+TANDEM_USERNAME = os.environ.get("TANDEM_USERNAME")
+TANDEM_PASSWORD = os.environ.get("TANDEM_PASSWORD")
+print(TANDEM_HOST)
 
-# Password validation
-# https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
+
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -96,27 +96,39 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-# Internationalization
-# https://docs.djangoproject.com/en/5.0/topics/i18n/
 
 LANGUAGE_CODE = 'ru-ru'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = "Asia/Novosibirsk"
 
 USE_I18N = True
 
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.0/howto/static-files/
-
 STATIC_URL = 'static/'
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+FILE_PATH = Path("C://",  "Users", "e.n.ermakov", "Desktop", "file_ic", "ЭК_ДЗ.xlsx")
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_USE_TLS = True
+EMAIL_HOST = os.environ.get("EMAIL_HOST")
+EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
+EMAIL_POST = 25
+
+
+CELERY_BROKER_URL = 10
+CELERY_BROKER_TRANSPORT_OPTIONS = {"visibility_timeout" : 3600}
+CELERY_RESULT_BACKEND = os.environ.get("CELERY_RESULT_BACKEND")
+
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
+CELERY_ACCEPT_CONTENT = ["application/json"]
+CELERY_TASK_SERIALIZER = "json"
+CELERY_RESULT_SERIALIZER = "json"
 
 LOGGING = {
     'version': 1,
@@ -149,15 +161,15 @@ LOGGING = {
         'log_file': {
             'level': 'DEBUG',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': 'src/api.log',
+            'filename': 'src/logs/api.log',
             'maxBytes': 1024 * 1024 * 5,  # 5 mb
             'backupCount': 5,
             'formatter': 'verbose',
         },
-        'error_file': {
+        'error_file_api': {
             'level': 'ERROR',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': 'src/api_error.log',
+            'filename': 'src/logs/api_error.log',
             'maxBytes': 1024 * 1024 * 5,  # 5 mb
             'backupCount': 5,
             'formatter': 'verbose',
@@ -170,12 +182,17 @@ LOGGING = {
         },
     },
     'loggers': {
-        'django_project_api': {
-            'handlers': ['console', 'log_file', 'error_file', 'mail_admins'],
-            'level': 'DEBUG',
+        'ic_system.api.debt.tasks': {
+            'handlers': ['console', 'log_file', 'error_file_api', 'mail_admins'],
+            'level': 'ERROR',
         },
         'django.request': {
-            'handlers': ['mail_admins', 'error_file'],
+            'handlers': ['mail_admins', 'error_file_api'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+        'debt_task': {
+            'handlers': ['mail_admins'],
             'level': 'ERROR',
             'propagate': False,
         },

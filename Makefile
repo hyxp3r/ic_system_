@@ -12,7 +12,6 @@ migrations:
 
 .PHONY: migrate
 migrate:
-	cd src
 	poetry run python -m src.manage migrate
 
 .PHONY: run-server
@@ -22,3 +21,7 @@ run-server:
 .PHONY: check
 check:
 	poetry run python -m src.manage check
+
+.PHONY: shell
+shell:
+	poetry run python -m src.manage shell
