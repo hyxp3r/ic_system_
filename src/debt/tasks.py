@@ -13,7 +13,12 @@ logger = logging.getLogger("ic_system.api.debt.tasks")
 
 
 def get_mtime() -> datetime:
-    mtime = os.path.getmtime(FILE_PATH)
+    try:
+        mtime = os.path.getmtime(FILE_PATH)
+    except FileNotFoundError as e:
+        logger.error("File doesn't exist:", e)
+        raise FileNotFoundError()
+
     mtime_readable = datetime.fromtimestamp(mtime, tz = timezone.utc)
     return mtime_readable
 
