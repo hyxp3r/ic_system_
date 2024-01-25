@@ -15,10 +15,11 @@ djangorestframework = "^3.14.0"
 django-filter = "^23.5"
 redis = "^5.0.1"
 celery = "^5.3.6"
-django = "4.1.4"
+django = "4.1.6"
 django-celery-beat = "^2.5.0"
 pandas = "^2.1.4"
 openpyxl = "^3.1.2"
+eventlet = {version = "^0.35.0", platform = "win32"}
 
 
 [build-system]

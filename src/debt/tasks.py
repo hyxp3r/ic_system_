@@ -6,8 +6,8 @@ from django.db import IntegrityError, transaction
 from celery import shared_task
 import pandas as pd
 
-from src.api.debt.models import AccountsReceivable
-from src.config.settings import FILE_PATH
+from src.debt.models import AccountsReceivable
+from ic_system.settings import FILE_PATH
 
 logger = logging.getLogger("ic_system.api.debt.tasks")
 
@@ -25,15 +25,16 @@ def get_from_file() -> dict:
                                                 ])
     df["Сумма Конечный остаток Дт"] = df["Сумма Конечный остаток Дт"].fillna(0)
     df = df[df["Сумма Конечный остаток Дт"] != 0]
-    data = df.to_dict("list")
+    data = df.to_dict("records")
     return data
 
 def get_file_time_from_db () -> datetime|None:
     
-    try:
-        file_db_time = AccountsReceivable.objects.filter(status = True).first().file_created_time
-    except:
-         return None
+    record = AccountsReceivable.objects.filter(status = True).first()
+    if record:
+        file_db_time = record.file_created_time
+        return file_db_time
+        
     
 def insert_with_update(data:dict, mtime_readable:datetime):
 
@@ -49,7 +50,7 @@ def insert_with_update(data:dict, mtime_readable:datetime):
                 accounts.save()
         except IntegrityError as e:
             logger.error(f"Database error: {e}")
-            raise IndentationError()
+            raise IndentationError(e)
 
 def insert(data:dict, mtime_readable:datetime):
 
@@ -61,10 +62,12 @@ def insert(data:dict, mtime_readable:datetime):
                                             contract_number = item["Субконто2.Номер договора"],
                                             accounts_receivable = item["Сумма Конечный остаток Дт"],
                                             file_created_time = mtime_readable)
-                accounts.save()
+                accounts.save() 
+                logger.error(f"Database error: ")
+                raise IndentationError()    
         except IntegrityError as e:
             logger.error(f"Database error: {e}")
-            raise IndentationError()           
+            raise IndentationError(e)           
 
 @shared_task   
 def update_debt_table() -> None:
