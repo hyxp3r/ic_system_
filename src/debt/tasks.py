@@ -67,9 +67,7 @@ def insert(data:dict, mtime_readable:datetime):
                                             contract_number = item["Субконто2.Номер договора"],
                                             accounts_receivable = item["Сумма Конечный остаток Дт"],
                                             file_created_time = mtime_readable)
-                accounts.save() 
-                logger.error(f"Database error: ")
-                raise IndentationError()    
+                accounts.save()    
         except IntegrityError as e:
             logger.error(f"Database error: {e}")
             raise IndentationError(e)           

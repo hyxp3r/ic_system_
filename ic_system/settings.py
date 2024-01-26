@@ -11,7 +11,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.environ.get("SECRET_KEY")
 
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1']
 ADMINS = [("Ermakov", os.environ.get("ADMIN_MAIL")),]
@@ -96,9 +96,13 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+REST_FRAMEWORK = {
+    'COERCE_DECIMAL_TO_STRING': False,
+    'DATETIME_FORMAT': "%d-%m-%Y %H:%M:%S",
 
+}
 
-LANGUAGE_CODE = 'ru-ru'
+LANGUAGE_CODE = 'en'
 
 TIME_ZONE = "Asia/Novosibirsk"
 
