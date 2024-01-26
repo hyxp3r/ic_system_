@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_celery_beat',
     'src.debt',
+    'src.students',
 ]
 
 MIDDLEWARE = [
@@ -195,7 +196,7 @@ LOGGING = {
             'level': 'ERROR',
         },
         'django.request': {
-            'handlers': ['mail_admins', 'error_file_api'],
+            'handlers': ['mail_admins', 'console'],
             'level': 'ERROR',
             'propagate': False,
         },
